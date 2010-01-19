@@ -19,7 +19,16 @@ problem Centos needs to be installed with *kickstart*.
 Centos generates a kickstart file in the /root dir after normal installation.
 This file served as a template for the kickstart installation.
 
+Normal graphical installation:
+From Packagegroup Server choose Mailserver. At the Optional Packages dialog select
+only the postfix package.
 
+Update Installation
+-------------------
+
+After successful installation we will bring the packages up-to-date
+
+    yum update
 
 Additional packages
 -------------------
@@ -27,8 +36,7 @@ Additional packages
 We started with the most basic installation (Packagegroup @Core). For daily sysadmin
 work we need to install some additional packages.
 
-    yum install man screen vim-enhanced
-vim-enhanced
+    yum install man screen
 
 Install virtualization utilities
 --------------------------------
