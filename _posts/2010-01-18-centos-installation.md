@@ -1,5 +1,5 @@
 ---
-title: hello world
+title: Centos installation
 layout: default
 ---
 
@@ -28,7 +28,7 @@ We started with the most basic installation (Packagegroup @Core). For daily sysa
 work we need to install some additional packages.
 
     yum install man screen vim-enhanced
-
+vim-enhanced
 
 Install virtualization utilities
 --------------------------------

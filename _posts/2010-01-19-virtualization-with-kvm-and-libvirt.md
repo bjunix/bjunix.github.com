@@ -1,9 +1,52 @@
 ---
-title: hello world
+title: Virtualization with kvm and libvirt
 layout: default
 ---
 
-Hello World
-===========
+Virtualization with kvm and libvirt
+===================================
 
-* This is the first post out here!
+
+
+Use virt-install to setup virtual machine
+-----------------------------------------
+
+Sample scripts
+
+
+Setup machine for a Gentoo installation boot up with the Gentoo Livecd
+
+    #!/bin/bash
+
+    virt-install \
+         --connect qemu:///system \
+         --name $1 \
+         --ram 500 \
+         --file /var/lib/libvirt/images/$1.img \
+         --file-size 5 \
+         --cdrom /var/lib/libvirt/images/install-amd64-minimal-20091203.iso \
+         --network user \
+         --force \
+         --vnc \
+         --accelerate \
+         --noautoconsole
+
+
+
+Install Fedora 12 from network location:
+
+    #!/bin/bash
+    virt-install \
+         --connect qemu:///system \
+         --name $1 \
+         --ram 500 \
+         --file /var/lib/libvirt/images/$1.img \
+         --file-size 5 \
+         --network user \
+         --force \
+         --vnc \
+         --accelerate \
+         --noautoconsole \
+         --location http://fedora.uni-oldenburg.de/releases/12/Fedora/x86_64/os/ \
+         -x "console=ttyS0"
+

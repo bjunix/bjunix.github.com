@@ -6,4 +6,5 @@ layout: default
 Hello World
 ===========
 
-* This is the first post out here!
+This is the first post out here!
+--------------------------------
