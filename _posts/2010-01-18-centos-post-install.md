@@ -11,4 +11,5 @@ Cleanup
 
 Following packages will be removed after installation:
 
-    yum erase ...
+    yum erase cups-libs
+    #(this also removes ecryptfs-utils, gtk2 and trousers)
