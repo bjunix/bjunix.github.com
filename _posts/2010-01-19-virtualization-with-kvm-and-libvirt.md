@@ -32,8 +32,10 @@ Tell virsh about it:
 
 Do not know if this is needed:
 
-    iptables -I RH-Firewall-1-INPUT -i virbr1 -j ACCEPT
-
+    #iptables -I RH-Firewall-1-INPUT -i virbr1 -j ACCEPT
+    iptables -I FORWARD -i virbr1 -j ACCEPT
+    iptables -D FORWARD -i virbr1 -j REJECT
+    iptables -D FORWARD -o virbr1 -j REJECT
 Setup guest IPs
 ----------------
 
