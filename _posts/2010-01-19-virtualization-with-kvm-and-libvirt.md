@@ -6,6 +6,21 @@ layout: default
 Virtualization with kvm and libvirt
 ===================================
 
+Using lvm volumes as storage:
+-----------------------------
+
+Instead of image files it is possible to use lvm volumes for storage.
+In Centos 5.4 selinux prevents libvirt to utilize storage other than
+found under /var/lib/libvirt/images/. (This bug is said to be fixed in fedora 10)
+
+For Centos 5.4 we need to tell selinux about our new volume:
+
+chcon -t virt_image_t /dev/lvm-kvm/*<logical_vol>*
+restorecon /dev/lvm-kvm/*<logical_vol>*
+
+See:
+https://bugzilla.redhat.com/show_bug.cgi?id=491245
+http://www.linux-archive.org/fedora-selinux-support/283369-selinux-qemu-lvm-issues.html
 
 Setup routed network
 --------------------
@@ -92,6 +107,47 @@ Now we can connect to middle:10000 and all data will get redirected to destinati
 
 Be sure not to forget to set a password for the vnc server as everybody can connect
 to middle:10000
+
+
+Costum kernel options:
+----------------------
+
+If you build a custom kernel make sure you build it with the 8139cp network driver.
+Also the VIRTIO options should be selected (some are still masked experimental)
+Look as well for the KVM and PARAVIRT options and see what fits to your setup ...
+
+Virtio device drivers:
+----------------------
+
+If you use the virtio drivers for the harddisk remember that the devices are named
+
+vda1
+vda2
+vdaN
+
+Before using virtio make sure to change grub.conf and /etc/fstab
+
+
+Cloning a virtual machine:
+--------------------------
+
+Cloning a guest with libvirt's virt-clone is quite straightforward.
+
+You can use virt-clone with the --prompt option for convinience. There are
+somethings to remember after cloning a existing machine. The networks hardware
+address (MAC) will change and the new guest system will not know about it. It
+will probably create a new device and you need to make sure it will get started
+and configured on startup. So after booting the new machine you need to
+*virsh console* into it and reconfigure the network. Places to look are
+dependend on the operating system of the guest but may include the following:
+
+* /etc/init.d/
+* /etc/sysconfig/
+* /etc/conf.d/
+* /etc/udev/rules.d/70-persistent-net.rules (for mapping the hwaddr to device name)
+
+And be sure to edit the xml definition file of the new machine and adjust mem
+and cpu usage
 
 
 Sample scripts
