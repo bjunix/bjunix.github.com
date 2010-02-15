@@ -45,8 +45,17 @@ Cleanup
 
 Following packages will be removed after installation:
 
-    yum erase cups-libs
+    yum erase cups-libs kudzu iptables-ipv6
     #(this also removes ecryptfs-utils, gtk2 and trousers)
+
+    chkconfig postfix off
+    chkconfig avahi-daemon off
+    chkconfig iscsi off
+    chkconfig iscsid off
+    chkconfig haldaemon off
+    chkconfig messagebus off
+    chkconfig rawdevices off
+
 
 Get rid of ix86 packages as we run on 64bit system exclusivly.
 
@@ -55,6 +64,18 @@ Get rid of ix86 packages as we run on 64bit system exclusivly.
 To keep it that way, we edit the /etc/yum.conf and append a line:
 
     exclude = *.i?86
+
+
+Optional: Disable NFS
+---------------------
+
+chkconfig netfs off
+    chkconfig nfslock off
+    chkconfig rpcidmapd off
+    chkconfig rpcgssd off
+    chkconfig portmap off
+
+
 
 
 Optional: Backup the basic installation

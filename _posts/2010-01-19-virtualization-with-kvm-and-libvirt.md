@@ -6,6 +6,25 @@ layout: default
 Virtualization with kvm and libvirt
 ===================================
 
+Using the virsh console:
+------------------------
+
+In order to be able to use virsh's console you need to activate a serial console
+in the guest system.
+
+* Edit your /etc/inittab and append:
+    s0:12345:respawn:/sbin/agetty -L 115200 ttyS0 vt102
+* append to your grub.conf kernel line:
+    console=tty0 console=ttys0,115200
+
+Moving paritions:
+-----------------
+
+I've always used this for moving data to new partitions:
+
+ % cd /mnt/chroot/var
+ % find -xdev -depth -print | cpio -padvmB /mnt/chroot/newvar
+
 Using lvm volumes as storage:
 -----------------------------
 
