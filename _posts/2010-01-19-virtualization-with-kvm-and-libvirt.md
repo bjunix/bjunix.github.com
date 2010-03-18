@@ -34,8 +34,12 @@ found under /var/lib/libvirt/images/. (This bug is said to be fixed in fedora 10
 
 For Centos 5.4 we need to tell selinux about our new volume:
 
-chcon -t virt_image_t /dev/lvm-kvm/*<logical_vol>*
-restorecon /dev/lvm-kvm/*<logical_vol>*
+    chcon -t virt_image_t /dev/lvm-kvm/*<logical_vol>*
+    restorecon /dev/lvm-kvm/*<logical_vol>*
+
+we can make this persisten to come effective after reboot with:
+
+    semanage fcontext -m -t virt_image_t "/dev/lvm-kvm/*<logical_vol>*"
 
 See:
 https://bugzilla.redhat.com/show_bug.cgi?id=491245
@@ -76,6 +80,9 @@ Setup guest IPs
 for every ip run this on the virt host:
 
     /sbin/ip route add *<guest_ip>* dev virbr1 scope link
+
+
+and add something to /etc/rc.local to do this during boot up (see sample scripts below)
 
 Guest network config
 --------------------
@@ -171,6 +178,54 @@ and cpu usage
 
 Sample scripts
 --------------
+
+
+
+/etc/rc.local
+
+    #ugly workaround to wait for libvirtd to be finished
+    #trying to set up routing to virbr1 for the kvm guests here
+    #and removing libvirts restrictive iptables rules
+    #TODO: find a better place to do this
+
+    #try 5 times to see if virbr1 is active
+    #if virbr1 is up set the route
+    for i in {1..5}; do
+      if /sbin/ifconfig virbr1 >/dev/null 2>&1; then
+        echo "virbr1 is up: Set up routes..."
+        /sbin/ip route add <guest_ip> dev virbr1 scope link >/dev/null 2>&1
+        /sbin/ip route add <guest_ip> dev virbr1 scope link >/dev/null 2>&1
+        /sbin/ip route add <guest_ip> dev virbr1 scope link >/dev/null 2>&1
+        echo "Done setting up routes for virb1"
+        break
+      fi
+      #wait 2 seconds before the next try
+      sleep 2
+    done
+
+    #try another 5 times to remove the iptable rules
+    for i in {1..5}; do
+      if /sbin/iptables -D FORWARD -o virbr1 -j REJECT >/dev/null 2>&1; then
+        echo "remove libvirt iptable rule for virbr1"
+        break
+      fi
+      sleep 2
+    done
+
+    for i in {1..5}; do
+      if /sbin/iptables -D FORWARD -i virbr1 -j REJECT >/dev/null 2>&1; then
+         echo "remove libvirt iptable rule for virbr1"
+         break
+      fi
+      sleep 2
+    done
+
+
+
+
+
+
+
 
 Setup machine for a Gentoo installation boot up with the Gentoo Livecd
 
