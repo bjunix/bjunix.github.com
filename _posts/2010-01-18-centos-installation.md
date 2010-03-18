@@ -45,7 +45,7 @@ Cleanup
 
 Following packages will be removed after installation:
 
-    yum erase cups-libs kudzu iptables-ipv6
+    yum erase cups-libs kudzu iptables-ipv6 pango
     #(this also removes ecryptfs-utils, gtk2 and trousers)
 
     chkconfig postfix off
